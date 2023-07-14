@@ -6,7 +6,7 @@ public class UltraS : MonoBehaviour {
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100)) {
+        if (Physics.SphereCast(transform.position, .5f, transform.forward, out hit, 100)) { //+ transform.forward*.5f
             Debug.DrawLine(transform.position, hit.point);
             distance = (hit.point - transform.position).magnitude;
         } else {

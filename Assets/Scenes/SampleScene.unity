@@ -547,6 +547,10 @@ PrefabInstance:
       value: HorizontalKey
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: autonomous
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: FlickButton
       value: space
       objectReference: {fileID: 0}
@@ -984,6 +988,10 @@ PrefabInstance:
       value: HorizontalKeyNum
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: autonomous
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: FlickButton
       value: '[0]'
       objectReference: {fileID: 0}
@@ -1072,7 +1080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6073990104861514217, guid: 62211c0644a1399419f4822cf50da89d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4
+      value: 2.97
       objectReference: {fileID: 0}
     - target: {fileID: 6073990104861514217, guid: 62211c0644a1399419f4822cf50da89d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1434,6 +1442,10 @@ PrefabInstance:
       propertyPath: Flicker
       value: 
       objectReference: {fileID: 2983838714283345043}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: autonomous
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
       value: 1
