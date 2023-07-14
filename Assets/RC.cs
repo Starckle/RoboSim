@@ -61,6 +61,11 @@ public class RC : MonoBehaviour {
     public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
     public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
     public bool debug_lines = false;
+    public bool show_waypoints = false;
+    List<Transform> arrows = new List<Transform>();
+    Transform targetArrow = null;
+    public Transform arrowPrefab = null;
+    public Transform targetPrefab = null;
     static Vector2Int[] DIRS = new Vector2Int[] {
         Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     };
@@ -101,6 +106,24 @@ public class RC : MonoBehaviour {
         new Vector3(  2, 0,  4),
     };
     public ObstacleViewer obs_view = null;
+    public void SetWaypoints(List<Vector2Int> wps) {
+        waypoints = wps;
+        //regenerate arrows
+        if (show_waypoints) {
+            foreach (var arrow in arrows) {
+                Destroy(arrow.gameObject);
+            }
+            arrows.Clear();
+            for (var i = 0; i < waypoints.Count - 1; i++) {
+                var pos = IndexToPosition(waypoints[i]);
+                var next = IndexToPosition(waypoints[i + 1]);
+                var forward = next - pos;
+                var arrow = Instantiate(arrowPrefab, pos, Quaternion.identity, transform);
+                arrows.Add(arrow);
+                arrow.forward = forward;
+            }
+        }
+    }
     public void PrefillKnownObstacles() {
         foreach(var obs in PRESET_OBSTACLES) {
             var idx = PositionToIndex(obs);
@@ -203,6 +226,7 @@ public class RC : MonoBehaviour {
         }
         if (self.waypoints.Count > 0) {
             self.waypoints.RemoveRange(0,end+1);
+            self.SetWaypoints(self.waypoints);
             //for( var i=1; i<self.waypoints.Count; i++) {
             //    self.waypoints[i - 1] = self.waypoints[i];
             //}
@@ -225,7 +249,7 @@ public class RC : MonoBehaviour {
         return self.waypoints.Count > 0 && (IndexToPosition(self.waypoints[0]) - self.RoboTransform.position).magnitude > 2;
     }
     static void ClearWaypoints(RC self) {
-        self.waypoints.Clear();
+        self.SetWaypoints(new List<Vector2Int>());
     }
     static void DoDrive(RC self) {
         if(self.waypoints.Count == 0) {
@@ -276,7 +300,7 @@ public class RC : MonoBehaviour {
     static void GenerateWaypoints(RC self) {
         if (self.Target.HasValue) {
             var start = Time.realtimeSinceStartup;
-            self.waypoints = self.GenerateWaypointsToTarget(self.RoboTransform.position, IndexToPosition(self.Target.Value));
+            self.SetWaypoints(self.GenerateWaypointsToTarget(self.RoboTransform.position, IndexToPosition(self.Target.Value)));
             if (self.waypoints.Count == 0) {
                 GenerateMainwaypoint(self);
             }
@@ -316,6 +340,12 @@ public class RC : MonoBehaviour {
             if (self.obstacles[newTarget.x, newTarget.y]<CLEAR_OF_OBSTACLES) {
                 self.Target = newTarget;
             }
+        }
+        if (self.show_waypoints) {
+            if (self.targetArrow) {
+                Destroy(self.targetArrow.gameObject);
+            }
+            self.targetArrow = Instantiate(self.targetPrefab, IndexToPosition(self.Target.Value), Quaternion.identity);
         }
     }
     static bool ApproxEqual(float a, float b, float delta = 0.1f) {
