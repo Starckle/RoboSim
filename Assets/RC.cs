@@ -9,9 +9,11 @@ public class AxleInfo {
     public bool motor;
     public bool steering;
 }
-
+public enum OperationalModes { Manual, Semi, Autonomous }
 public class RC : MonoBehaviour {
     public List<AxleInfo> axleInfos;
+    public UltraS[] sensors;
+    public OperationalModes autonomous;
     public float maxMotorTorque;
     //public float maxSteeringAngle;
 
@@ -59,29 +61,31 @@ public class RC : MonoBehaviour {
     float ROTATE_SPEED = 1f;
     float STRAFE_SPEED = 1.0f;
     public void FixedUpdate() {
-        float forward = maxMotorTorque * Input.GetAxis(ForwardAxis) * FORWARD_SPEED;
-        float rotate = -maxMotorTorque * Input.GetAxis(RotateAxis) * ROTATE_SPEED;
-        float strafe = maxMotorTorque * Input.GetAxis(StrafeAxis) * STRAFE_SPEED;
+        if (autonomous != OperationalModes.Autonomous) {
+            float forward = maxMotorTorque * Input.GetAxis(ForwardAxis) * FORWARD_SPEED;
+            float rotate = -maxMotorTorque * Input.GetAxis(RotateAxis) * ROTATE_SPEED;
+            float strafe = maxMotorTorque * Input.GetAxis(StrafeAxis) * STRAFE_SPEED;
 
-        int axle_index = 0;
-        var strafeScale = 1;
-        foreach (AxleInfo axleInfo in axleInfos) {
-            //if (axleInfo.steering) {
-            //    axleInfo.leftWheel.steerAngle = steering;
-            //    axleInfo.rightWheel.steerAngle = steering;
-            //}
-            if (axleInfo.motor) {
-                axleInfo.leftWheel.motorTorque = Mathf.Clamp(forward + rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
-                axleInfo.rightWheel.motorTorque = Mathf.Clamp(forward - rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
-                colorWheel(axleInfo.leftWheel, axleInfo.leftWheel.motorTorque);
-                colorWheel(axleInfo.rightWheel, axleInfo.rightWheel.motorTorque);
+            int axle_index = 0;
+            var strafeScale = 1;
+            foreach (AxleInfo axleInfo in axleInfos) {
+                //if (axleInfo.steering) {
+                //    axleInfo.leftWheel.steerAngle = steering;
+                //    axleInfo.rightWheel.steerAngle = steering;
+                //}
+                if (axleInfo.motor) {
+                    axleInfo.leftWheel.motorTorque = Mathf.Clamp(forward + rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
+                    axleInfo.rightWheel.motorTorque = Mathf.Clamp(forward - rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
+                    colorWheel(axleInfo.leftWheel, axleInfo.leftWheel.motorTorque);
+                    colorWheel(axleInfo.rightWheel, axleInfo.rightWheel.motorTorque);
 
+                }
+                ApplyLocalPositionToVisuals(axleInfo.leftWheel, axle_index);
+                ApplyLocalPositionToVisuals(axleInfo.rightWheel, axle_index);
+
+                axle_index++;
+                strafeScale = strafeScale * -1;
             }
-            ApplyLocalPositionToVisuals(axleInfo.leftWheel, axle_index);
-            ApplyLocalPositionToVisuals(axleInfo.rightWheel, axle_index);
-
-            axle_index++;
-            strafeScale = strafeScale * -1;
         }
     }
 }
