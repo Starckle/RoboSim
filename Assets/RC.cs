@@ -73,8 +73,8 @@ public class RC : MonoBehaviour {
         if (autonomous == OperationalModes.Autonomous) {
             Flicker.useSpring = true; 
             if (sensors.Length > 0) {
-                forward = maxMotorTorque * 1f * FORWARD_SPEED;
-                bool turn = sensors[0].distance < 1.5f;
+                forward = maxMotorTorque * 0.2f * FORWARD_SPEED;
+                bool turn = sensors[2].distance < 2f;
                 if (turn) {
                     forward = 0;
                     rotate = -maxMotorTorque * 1f * ROTATE_SPEED;

@@ -366,6 +366,17 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &595919789 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7694576887542186172, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 2983838714283345041}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &670046023 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6330595992881792955, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
@@ -560,12 +571,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.data[0]
       value: 
       objectReference: {fileID: 931326723}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[1]
+      value: 
+      objectReference: {fileID: 1697826152}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[2]
+      value: 
+      objectReference: {fileID: 2012769854}
     - target: {fileID: 2555189060643884507, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -590,6 +609,17 @@ PrefabInstance:
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7791098955448093113, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
   m_PrefabInstance: {fileID: 931326722}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &951963768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7694576887542186172, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 1314441883}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -1001,12 +1031,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.data[0]
       value: 
       objectReference: {fileID: 1314441884}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[1]
+      value: 
+      objectReference: {fileID: 951963768}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[2]
+      value: 
+      objectReference: {fileID: 1860185608}
     - target: {fileID: 2555189060643884507, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1054,6 +1092,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6330595992881792955, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
   m_PrefabInstance: {fileID: 2983838714283345041}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1630230236 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2094674135021311039, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 2983838714283345041}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1647638710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1120,6 +1169,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6073990104861514217, guid: 62211c0644a1399419f4822cf50da89d, type: 3}
   m_PrefabInstance: {fileID: 1647638710}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1697826152 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7694576887542186172, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 931326722}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1860185608 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2094674135021311039, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 1314441883}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1953298813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,6 +1283,17 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &2012769854 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2094674135021311039, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 931326722}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37fb65d79097ce64496bca6af2580f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2090869589
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,12 +1530,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.data[0]
       value: 
       objectReference: {fileID: 1417475712}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[1]
+      value: 
+      objectReference: {fileID: 595919789}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: sensors.Array.data[2]
+      value: 
+      objectReference: {fileID: 1630230236}
     - target: {fileID: 3648537358055881710, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
