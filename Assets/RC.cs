@@ -15,9 +15,16 @@ public class RC : MonoBehaviour {
     public float maxMotorTorque;
     //public float maxSteeringAngle;
 
-    //Quaternion BASE_WHEEL_ROTATION = Quaternion.Euler(0, 0, 90);
+    public string ForwardAxis = "Vertical";
+    public string RotateAxis = "Horizontal";
+    public string StrafeAxis = "Yaw";
 
-    public void ApplyLocalPositionToVisuals(WheelCollider collider) {
+    Quaternion[] BASE_WHEEL_ROTATIONS = new[]{
+        Quaternion.Euler(0, -45, 0),
+        Quaternion.Euler(0, 45, 0)
+    };
+
+    public void ApplyLocalPositionToVisuals(WheelCollider collider, int index) {
         if (collider.transform.childCount == 0) {
             return;
         }
@@ -29,7 +36,7 @@ public class RC : MonoBehaviour {
         collider.GetWorldPose(out position, out rotation);
 
         visualWheel.transform.position = position;
-        visualWheel.transform.rotation = rotation; // * BASE_WHEEL_ROTATION 
+        visualWheel.transform.rotation = BASE_WHEEL_ROTATIONS[index] * rotation;
     }
     private void colorWheel(WheelCollider wc, float torque) {
         var mr = wc.transform.GetComponentInChildren<MeshRenderer>();
@@ -38,24 +45,33 @@ public class RC : MonoBehaviour {
         if (torque < 0) { color.g = 1 + torque/maxMotorTorque; }
         mr.material.color = color;
     }
+    float FORWARD_SPEED = 1f;
+    float ROTATE_SPEED = 1f;
+    float STRAFE_SPEED = 1.0f;
     public void FixedUpdate() {
-        float motor = maxMotorTorque * Input.GetAxis("Vertical");
-        float steering = -maxMotorTorque * Input.GetAxis("Horizontal");
+        float forward = maxMotorTorque * Input.GetAxis(ForwardAxis) * FORWARD_SPEED;
+        float rotate = -maxMotorTorque * Input.GetAxis(RotateAxis) * ROTATE_SPEED;
+        float strafe = maxMotorTorque * Input.GetAxis(StrafeAxis) * STRAFE_SPEED;
 
+        int axle_index = 0;
+        var strafeScale = 1;
         foreach (AxleInfo axleInfo in axleInfos) {
             //if (axleInfo.steering) {
             //    axleInfo.leftWheel.steerAngle = steering;
             //    axleInfo.rightWheel.steerAngle = steering;
             //}
             if (axleInfo.motor) {
-                axleInfo.leftWheel.motorTorque = Mathf.Clamp(motor + steering, -maxMotorTorque, maxMotorTorque);
-                axleInfo.rightWheel.motorTorque = Mathf.Clamp(motor - steering, -maxMotorTorque, maxMotorTorque);
+                axleInfo.leftWheel.motorTorque = Mathf.Clamp(forward + rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
+                axleInfo.rightWheel.motorTorque = Mathf.Clamp(forward - rotate + strafe * strafeScale, -maxMotorTorque, maxMotorTorque);
                 colorWheel(axleInfo.leftWheel, axleInfo.leftWheel.motorTorque);
                 colorWheel(axleInfo.rightWheel, axleInfo.rightWheel.motorTorque);
 
             }
-            ApplyLocalPositionToVisuals(axleInfo.leftWheel);
-            ApplyLocalPositionToVisuals(axleInfo.rightWheel);
+            ApplyLocalPositionToVisuals(axleInfo.leftWheel, axle_index);
+            ApplyLocalPositionToVisuals(axleInfo.rightWheel, axle_index);
+
+            axle_index++;
+            strafeScale = strafeScale * -1;
         }
     }
 }
