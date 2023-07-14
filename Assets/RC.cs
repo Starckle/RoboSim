@@ -51,6 +51,7 @@ public class RC : MonoBehaviour {
 
     static int BLOCKED = -1;
     static int CLEAR_OF_OBSTACLES = 100;
+    static float DRIVE_NO_AVOIDANCE_TIME = 0.5f;
     static int GRID_WIDTH = 11; //6;
     static int GRID_HEIGHT = 11; //6;
     static int GRID_SIZE = 1; //2; //2ft per cube
@@ -230,8 +231,8 @@ public class RC : MonoBehaviour {
         if (self.Target.HasValue) {
             Debug.DrawLine(self.RoboTransform.position, IndexToPosition(self.Target.Value), Color.magenta);
         }
-        
-        if (self.sensors.Min(s => s.distance) < 1.5f) {
+
+        if ((Time.fixedTime - self.stateStartTime)>=DRIVE_NO_AVOIDANCE_TIME && self.sensors.Min(s => s.distance) < 1.5f) {
             DoAvoidance(self);
         } else {
             var delta = IndexToPosition(self.waypoints[0]) - self.RoboTransform.position;
@@ -261,7 +262,10 @@ public class RC : MonoBehaviour {
     }
     static void GenerateWaypoints(RC self) {
         if (self.Target.HasValue) {
+            var start = Time.realtimeSinceStartup;
             self.waypoints = self.GenerateWaypointsToTarget(self.RoboTransform.position, IndexToPosition(self.Target.Value));
+            var stop = Time.realtimeSinceStartup;
+            Debug.Log("Created a " + self.waypoints.Count + " waypoint route in " + (stop - start) + " ms");
         }
  /* !!!! ----> */    //if (ApproxEqual(self.waypoints[0].x, self.Mainwaypoint[0].x)) {
             //self.Mainwaypoint = new Vector3[1];
@@ -472,6 +476,8 @@ public class RC : MonoBehaviour {
     public float CmdForward = 0;
     public float CmdRotate = 0;
     public float CmdStrafe = 0;
+
+    public float stateStartTime = 0;
     public void FixedUpdate() {
         if (autonomous != OperationalModes.Autonomous) {
             CmdForward = Input.GetAxis(ForwardAxis);
@@ -486,6 +492,7 @@ public class RC : MonoBehaviour {
                     if (transition.condition(this)) {
                         transition.action?.Invoke(this);
                         state = transition.to;
+                        stateStartTime = Time.fixedTime;
                         Debug.Log("Transitioning from: " + transition.from + " to: " + transition.to);
                         break;
                     }
