@@ -61,6 +61,12 @@ public class RC : MonoBehaviour {
     static bool NoWaypoints(RC self) {
         return self.waypoints.Length == 0;
     }
+    static bool HaveWaypoints(RC self) {
+        return self.waypoints.Length > 0;
+    }
+    static bool AlwaysTrue(RC self) {
+        return true;
+    }
     static void DoDrive(RC self) {
         if(self.waypoints.Length == 0) {
             return;
@@ -95,6 +101,11 @@ public class RC : MonoBehaviour {
         self.CmdForward = 0;
         self.CmdRotate = 0;
         self.CmdStrafe = 0;
+    }
+    static void GenerateWaypoints(RC self) {
+        self.waypoints = new Vector3[1];
+        self.waypoints[0].x = -5 + UnityEngine.Random.Range(0, 5) * 2;
+        self.waypoints[0].z = -5 + UnityEngine.Random.Range(0, 5) * 2;
     }
     static bool ApproxEqual(float a, float b, float delta = 0.1f) {
         return Mathf.Abs(a - b) <= delta;
@@ -131,7 +142,7 @@ public class RC : MonoBehaviour {
                 //        self.sensors[2].distance = 0;
 
                 //    } else 
-                if(self.sensors[1].distance <= 0.8f) {
+                if(self.sensors[1].distance <= 1f) {
                     self.CmdForward = -0.2f;
                 }
                 if (ApproxEqual(
@@ -176,10 +187,31 @@ public class RC : MonoBehaviour {
             }
         },
         {
+            RoboStateName.Planning,
+            new RoboState {
+                name = RoboStateName.Planning,
+                execution = GenerateWaypoints,
+                transitions = new RoboTransition[] {
+                    new RoboTransition{
+                        from = RoboStateName.Planning,
+                        to = RoboStateName.Drive,
+                        condition = HaveWaypoints
+                    }
+                }
+            }
+        },
+        {
             RoboStateName.Rest,
             new RoboState {
                 name = RoboStateName.Rest,
-                execution = DoNothing
+                execution = DoNothing,
+                transitions = new RoboTransition[] {
+                    new RoboTransition {
+                        from = RoboStateName.Rest,
+                        to = RoboStateName.Planning,
+                        condition = AlwaysTrue
+                    }
+                }
             }
         }
     };
@@ -269,6 +301,7 @@ public class RC : MonoBehaviour {
                 }
             }
             stateNode.execution?.Invoke(this);
+            // TODO: Sample Sensors, record obstacles
         }
 
         var ForwardTorque = CmdForward * maxMotorTorque * FORWARD_SPEED;
