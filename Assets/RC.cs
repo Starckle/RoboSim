@@ -62,6 +62,9 @@ public class RC : MonoBehaviour {
     static Vector2Int[] DIRS = new Vector2Int[] {
         Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     };
+    static Vector2Int[] CORNER_DIRS = new Vector2Int[] {
+        Vector2Int.up+Vector2Int.left, Vector2Int.up+Vector2Int.right, Vector2Int.down+Vector2Int.left, Vector2Int.down+Vector2Int.right
+    };
     //static Vector2Int[] CORNER_DIRS = new Vector2Int[] {
     //    Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     //};
@@ -114,32 +117,34 @@ public class RC : MonoBehaviour {
                 }
             }
         }
-        HashSet<Vector2Int> locs = new HashSet<Vector2Int>();
-        locs.Add(to_idx);
+        HashSet<Tuple<Vector2Int,float>> locs = new HashSet<Tuple<Vector2Int, float>>();
+        locs.Add(Tuple.Create(to_idx,0f));
         bool graph_completed = false;
-        float dist = 0;
         while (locs.Any() && !graph_completed) {
-            HashSet<Vector2Int> new_locs = new HashSet<Vector2Int>();
-            foreach(var loc in locs) {
+            HashSet<Tuple<Vector2Int, float>> new_locs = new HashSet<Tuple<Vector2Int, float>>();
+            foreach (var (loc,offset) in locs) {
                 if ( obstacles[loc.x, loc.y] > CLEAR_OF_OBSTACLES) {
                     continue;
                 }
                 if (loc == from_idx) {
-                    pathplanningtemp[loc.x, loc.y] = dist;
                     graph_completed = true;
-                    break;
                 }
-                if (dist < pathplanningtemp[loc.x, loc.y] ) {
-                    pathplanningtemp[loc.x, loc.y] = dist;
+                if (offset < pathplanningtemp[loc.x, loc.y] ) {
+                    pathplanningtemp[loc.x, loc.y] = offset;
                     foreach(var off in DIRS) {
                         var new_pos = loc + off;
-                        if (InGrid(new_pos)) {
-                            new_locs.Add(new_pos);
+                        if (InGrid(new_pos) && (offset + 1f) < pathplanningtemp[new_pos.x, new_pos.y]) {
+                            new_locs.Add(Tuple.Create(new_pos,offset+1.0f));
+                        }
+                    }
+                    foreach (var off in CORNER_DIRS) {
+                        var new_pos = loc + off;
+                        if (InGrid(new_pos) && (offset + 1.414f) < pathplanningtemp[new_pos.x, new_pos.y]) {
+                            new_locs.Add(Tuple.Create(new_pos, offset + 1.414f));
                         }
                     }
                 }
             }
-            dist++;
             locs = new_locs;
         }
 
@@ -149,18 +154,28 @@ public class RC : MonoBehaviour {
             // TODO: This can loop forever. add safety
             while (curr_loc != to_idx) {
                 var found = false;
-                foreach (var dir in DIRS) {
+                Vector2Int least_next = new Vector2Int();
+                float least_next_dist = float.MaxValue;
+                foreach (var dir in DIRS.Concat(CORNER_DIRS).ToArray()) {
                     var next = curr_loc + dir;
-                    if (InGrid(next) && pathplanningtemp[next.x, next.y] < curr_dist && pathplanningtemp[next.x, next.y]!=BLOCKED) {
-                        curr_loc = next;
-                        curr_dist = pathplanningtemp[next.x, next.y];
-                        waypoints.Add(next);
-                        found = true;
-                        continue;
+                    var next_dist = InGrid(next)?pathplanningtemp[next.x, next.y]:-1;
+                    if (InGrid(next) && next_dist < curr_dist && next_dist != BLOCKED) {
+                        if(next_dist< least_next_dist) {
+                            least_next = next;
+                            least_next_dist = next_dist;
+                            found = true;
+                        }
+                        //curr_loc = next;
+                        //curr_dist = pathplanningtemp[next.x, next.y];
+                        //continue;
                     }
                 }
-                //Debug.Assert(found, "Oh God, we are stuck.");
-                if (!found) {
+                if (found) {
+                    curr_loc = least_next;
+                    curr_dist = least_next_dist;
+                    waypoints.Add(curr_loc);
+                    //Debug.Assert(found, "Oh God, we are stuck.");
+                } else {
                     return new List<Vector2Int>();
                 }
             }
@@ -226,8 +241,8 @@ public class RC : MonoBehaviour {
             var deltaLocalNormalized = self.RoboTransform.InverseTransformVector(delta).normalized;
             //var deltaLocal = self.GetRotation()
             if (dist < 1.5) {
-                self.CmdForward = deltaLocalNormalized.z;
-                self.CmdStrafe = deltaLocalNormalized.x;
+                self.CmdForward = deltaLocalNormalized.z / 2;
+                self.CmdStrafe = deltaLocalNormalized.x / 2;
             } else {
                 self.CmdRotate = angle / 180;
                 self.CmdForward = 0.2f;
