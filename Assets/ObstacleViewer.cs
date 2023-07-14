@@ -11,14 +11,14 @@ public class ObstacleViewer : MonoBehaviour
     {
         for(var x=0; x<RC.GRID_WIDTH; x++) {
             for(var y=0; y<RC.GRID_HEIGHT; y++) {
-                obstacles[x,y] = Instantiate(quad_prefab, RC.IndexToPosition(new Vector2Int(x, y))+Vector3.up, Quaternion.Euler(90, 0, 0), transform);
+                obstacles[x,y] = Instantiate(quad_prefab, RC.IndexToPosition(new Vector2Int(x, y))+Vector3.up*.1f, Quaternion.Euler(90, 0, 0), transform);
             }
         }
     }
     public void setObstacles(float[,] obs_vals) {
         for (var x = 0; x < RC.GRID_WIDTH; x++) {
             for (var y = 0; y < RC.GRID_HEIGHT; y++) {
-                obstacles[x, y].localScale = Mathf.Clamp(obs_vals[x,y]/(10*RC.CLEAR_OF_OBSTACLES)-0.1f, 0, 1)*Vector3.one;
+                obstacles[x, y].localScale = RC.GRID_SIZE*Mathf.Clamp(obs_vals[x,y]/(10*RC.CLEAR_OF_OBSTACLES)-0.1f, 0, 1)*Vector3.one;
             }
         }
     }

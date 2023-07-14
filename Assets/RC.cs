@@ -54,9 +54,9 @@ public class RC : MonoBehaviour {
     static float DRIVE_NO_AVOIDANCE_TIME = 0.5f;
     public static int GRID_WIDTH = 11; //6;
     public static int GRID_HEIGHT = 11; //6;
-    public static int GRID_SIZE = 1; //2; //2ft per cube
-    public static float GRID_X_START = -5;
-    public static float GRID_Y_START = -5;
+    public static float GRID_SIZE = 1f; //2; //2ft per cube
+    public static float GRID_X_START = -5f;
+    public static float GRID_Y_START = -5f;
     static int MAX_DIST = GRID_WIDTH * GRID_HEIGHT;
     public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
     public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
@@ -256,6 +256,7 @@ public class RC : MonoBehaviour {
             if (dist < 1.5) {
                 self.CmdForward = deltaLocalNormalized.z / 2;
                 self.CmdStrafe = deltaLocalNormalized.x / 2;
+                self.CmdRotate = angle / 180;
             } else {
                 self.CmdRotate = angle / 180;
                 self.CmdForward = 0.2f;
@@ -528,6 +529,11 @@ public class RC : MonoBehaviour {
                 if (InGrid(iloc) && obstacles[iloc.x, iloc.y]<=1000) {
                     obstacles[iloc.x, iloc.y] = Mathf.Min(1000,obstacles[iloc.x, iloc.y] + 3);
                 }
+            }
+            //If you find yourself in a self made obstacle, clear it
+            var iloc_self = PositionToIndex(RoboTransform.position);
+            if(obstacles[iloc_self.x, iloc_self.y] <= 1000) {
+                obstacles[iloc_self.x, iloc_self.y] = 0;
             }
             // Degrade Obstacles
             for (var x = 0; x<GRID_WIDTH; x++) {
