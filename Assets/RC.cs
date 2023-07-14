@@ -50,29 +50,30 @@ public class RC : MonoBehaviour {
     static float WAY_COUNT = 0;
 
     static int BLOCKED = -1;
-    static int CLEAR_OF_OBSTACLES = 100;
+    public static int CLEAR_OF_OBSTACLES = 100;
     static float DRIVE_NO_AVOIDANCE_TIME = 0.5f;
-    static int GRID_WIDTH = 11; //6;
-    static int GRID_HEIGHT = 11; //6;
-    static int GRID_SIZE = 1; //2; //2ft per cube
-    static float GRID_X_START = -5;
-    static float GRID_Y_START = -5;
+    public static int GRID_WIDTH = 11; //6;
+    public static int GRID_HEIGHT = 11; //6;
+    public static int GRID_SIZE = 1; //2; //2ft per cube
+    public static float GRID_X_START = -5;
+    public static float GRID_Y_START = -5;
     static int MAX_DIST = GRID_WIDTH * GRID_HEIGHT;
     public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
     public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
+    public bool debug_lines = false;
     static Vector2Int[] DIRS = new Vector2Int[] {
         Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     };
     static Vector2Int[] CORNER_DIRS = new Vector2Int[] {
-        Vector2Int.up+Vector2Int.left, Vector2Int.up+Vector2Int.right, Vector2Int.down+Vector2Int.left, Vector2Int.down+Vector2Int.right
+        //Vector2Int.up+Vector2Int.left, Vector2Int.up+Vector2Int.right, Vector2Int.down+Vector2Int.left, Vector2Int.down+Vector2Int.right
     };
     //static Vector2Int[] CORNER_DIRS = new Vector2Int[] {
     //    Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     //};
-    static Vector2Int PositionToIndex(Vector3 pos) {
+    public static Vector2Int PositionToIndex(Vector3 pos) {
         return new Vector2Int((int)Mathf.Round((pos.x - GRID_X_START) / GRID_SIZE), (int)Mathf.Round((pos.z - GRID_Y_START) / GRID_SIZE));
     }
-    static Vector3 IndexToPosition(Vector2Int idx) {
+    public static Vector3 IndexToPosition(Vector2Int idx) {
         return new Vector3(idx.x * GRID_SIZE + GRID_X_START, 0, idx.y * GRID_SIZE + GRID_Y_START);
     }
     static bool InGrid(Vector2Int idx) {
@@ -99,6 +100,7 @@ public class RC : MonoBehaviour {
         new Vector3(  2, 0, -4),
         new Vector3(  2, 0,  4),
     };
+    public ObstacleViewer obs_view = null;
     public void PrefillKnownObstacles() {
         foreach(var obs in PRESET_OBSTACLES) {
             var idx = PositionToIndex(obs);
@@ -216,20 +218,30 @@ public class RC : MonoBehaviour {
     static bool AlwaysTrue(RC self) {
         return true;
     }
+    static bool IsBlocked(RC self) {
+        return self.waypoints.Count > 0 && self.obstacles[self.waypoints[0].x, self.waypoints[0].y] > CLEAR_OF_OBSTACLES;
+    }
+    static bool IsTooFar(RC self) {
+        return self.waypoints.Count > 0 && (IndexToPosition(self.waypoints[0]) - self.RoboTransform.position).magnitude > 2;
+    }
+    static void ClearWaypoints(RC self) {
+        self.waypoints.Clear();
+    }
     static void DoDrive(RC self) {
         if(self.waypoints.Count == 0) {
             return;
         }
-        
-        Debug.DrawLine(self.RoboTransform.position, self.RoboTransform.position + self.RoboTransform.forward * 2, Color.green);
-        var from = self.RoboTransform.position;
-        foreach(var wp in self.waypoints) {
-            var to = IndexToPosition(wp);
-            Debug.DrawLine(from, to, Color.blue);
-            from = to;
-        }
-        if (self.Target.HasValue) {
-            Debug.DrawLine(self.RoboTransform.position, IndexToPosition(self.Target.Value), Color.magenta);
+        if (self.debug_lines) {
+            //Debug.DrawLine(self.RoboTransform.position, self.RoboTransform.position + self.RoboTransform.forward * 2, Color.blue);
+            var from = self.RoboTransform.position;
+            foreach(var wp in self.waypoints) {
+                var to = IndexToPosition(wp);
+                Debug.DrawLine(from, to, Color.green);
+                from = to;
+            }
+            if (self.Target.HasValue) {
+                Debug.DrawLine(self.RoboTransform.position, IndexToPosition(self.Target.Value), Color.magenta);
+            }
         }
 
         if ((Time.fixedTime - self.stateStartTime)>=DRIVE_NO_AVOIDANCE_TIME && self.sensors.Min(s => s.distance) < 1.5f) {
@@ -286,6 +298,10 @@ public class RC : MonoBehaviour {
 
     }
     static void DoPlanning(RC self) {
+
+        self.CmdForward = 0;
+        self.CmdRotate = 0;
+        self.CmdStrafe = 0;
         GenerateWaypoints(self);
         // GenerateMainwaypoint(self);
     }
@@ -371,8 +387,25 @@ public class RC : MonoBehaviour {
                     },
                     new RoboTransition {
                         from = RoboStateName.Drive,
+                        to = RoboStateName.Planning,
+                        condition = (RC rc) => (Time.fixedTime - rc.stateStartTime)>5
+                    },
+                    new RoboTransition {
+                        from = RoboStateName.Drive,
                         to = RoboStateName.Rest,
                         condition = NoWaypoints,
+                    },
+                    new RoboTransition {
+                        from = RoboStateName.Drive,
+                        to = RoboStateName.Planning,
+                        condition = IsBlocked,
+                        action = ClearWaypoints,
+                    },
+                    new RoboTransition {
+                        from = RoboStateName.Drive,
+                        to = RoboStateName.Planning,
+                        condition = IsTooFar,
+                        action = ClearWaypoints,
                     }
                 },
                 execution = DoDrive
@@ -468,6 +501,9 @@ public class RC : MonoBehaviour {
         if (Input.GetKeyUp(FlickButton)) {
             Flicker.useSpring = false;
         }
+        if (obs_view != null) {
+            obs_view.setObstacles(obstacles);
+        }
     }
     float FORWARD_SPEED = 1f;
     float ROTATE_SPEED = 1f;
@@ -485,6 +521,20 @@ public class RC : MonoBehaviour {
             CmdStrafe = Input.GetAxis(StrafeAxis);
         }
         if (autonomous == OperationalModes.Autonomous) {
+            // Populate Obstacles from sensors
+            foreach (var sensor in sensors) {
+                var loc = sensor.transform.position + sensor.transform.forward * sensor.distance;
+                var iloc = PositionToIndex(loc);
+                if (InGrid(iloc) && obstacles[iloc.x, iloc.y]<=1000) {
+                    obstacles[iloc.x, iloc.y] = Mathf.Min(1000,obstacles[iloc.x, iloc.y] + 3);
+                }
+            }
+            // Degrade Obstacles
+            for (var x = 0; x<GRID_WIDTH; x++) {
+                for(var y=0;y<GRID_HEIGHT; y++) {
+                    obstacles[x, y] = Mathf.Max(0, obstacles[x, y]- 0.2f);
+                }
+            }
             // Execute State Machine
             var stateNode = states[state];
             if (stateNode.transitions != null) {
