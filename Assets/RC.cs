@@ -50,22 +50,56 @@ public class RC : MonoBehaviour {
     static float WAY_COUNT = 0;
 
     static int BLOCKED = -1;
-    static int GRID_WIDTH = 6;
-    static int GRID_HEIGHT = 6;
+    static int CLEAR_OF_OBSTACLES = 100;
+    static int GRID_WIDTH = 11; //6;
+    static int GRID_HEIGHT = 11; //6;
+    static int GRID_SIZE = 1; //2; //2ft per cube
+    static float GRID_X_START = -5;
+    static float GRID_Y_START = -5;
     static int MAX_DIST = GRID_WIDTH * GRID_HEIGHT;
     public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
     public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
     static Vector2Int[] DIRS = new Vector2Int[] {
         Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     };
+    //static Vector2Int[] CORNER_DIRS = new Vector2Int[] {
+    //    Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
+    //};
     static Vector2Int PositionToIndex(Vector3 pos) {
-        return new Vector2Int((int)Mathf.Round((pos.x + 5) / 2), (int)Mathf.Round((pos.z + 5) / 2));
+        return new Vector2Int((int)Mathf.Round((pos.x - GRID_X_START) / GRID_SIZE), (int)Mathf.Round((pos.z - GRID_Y_START) / GRID_SIZE));
     }
     static Vector3 IndexToPosition(Vector2Int idx) {
-        return new Vector3(idx.x * 2 -5, 0, idx.y * 2 -5);
+        return new Vector3(idx.x * GRID_SIZE + GRID_X_START, 0, idx.y * GRID_SIZE + GRID_Y_START);
     }
     static bool InGrid(Vector2Int idx) {
         return idx.x >= 0 && idx.x < GRID_WIDTH && idx.y >= 0 && idx.y < GRID_HEIGHT;
+    }
+    static Vector3[] PRESET_OBSTACLES = new[] {
+        new Vector3( -2, 0,  0),
+        new Vector3(  2, 0,  0),
+        new Vector3(  0, 0, -2),
+        new Vector3(  0, 0,  2),
+
+        new Vector3( -2, 0, -2),
+        new Vector3(  2, 0, -2),
+        new Vector3( -2, 0,  2),
+        new Vector3(  2, 0,  2),
+
+        new Vector3( -4, 0, -2),
+        new Vector3( -4, 0,  2),
+        new Vector3(  4, 0, -2),
+        new Vector3(  4, 0,  2),
+
+        new Vector3( -2, 0, -4),
+        new Vector3( -2, 0,  4),
+        new Vector3(  2, 0, -4),
+        new Vector3(  2, 0,  4),
+    };
+    public void PrefillKnownObstacles() {
+        foreach(var obs in PRESET_OBSTACLES) {
+            var idx = PositionToIndex(obs);
+            obstacles[idx.x, idx.y] = 1000000;
+        }
     }
     public List<Vector2Int> GenerateWaypointsToTarget(Vector3 from, Vector3 to) {
         var from_idx = PositionToIndex(from);
@@ -73,7 +107,11 @@ public class RC : MonoBehaviour {
         List<Vector2Int> waypoints = new List<Vector2Int>();
         for(var x =0; x<GRID_WIDTH; x++) {
             for(var y = 0; y<GRID_HEIGHT; y++) {
-                pathplanningtemp[x, y] = MAX_DIST;
+                if (obstacles[x, y] > CLEAR_OF_OBSTACLES) {
+                    pathplanningtemp[x, y] = BLOCKED;
+                } else {
+                    pathplanningtemp[x, y] = MAX_DIST;
+                }
             }
         }
         HashSet<Vector2Int> locs = new HashSet<Vector2Int>();
@@ -83,6 +121,9 @@ public class RC : MonoBehaviour {
         while (locs.Any() && !graph_completed) {
             HashSet<Vector2Int> new_locs = new HashSet<Vector2Int>();
             foreach(var loc in locs) {
+                if ( obstacles[loc.x, loc.y] > CLEAR_OF_OBSTACLES) {
+                    continue;
+                }
                 if (loc == from_idx) {
                     pathplanningtemp[loc.x, loc.y] = dist;
                     graph_completed = true;
@@ -110,7 +151,7 @@ public class RC : MonoBehaviour {
                 var found = false;
                 foreach (var dir in DIRS) {
                     var next = curr_loc + dir;
-                    if (InGrid(next) && pathplanningtemp[next.x, next.y] < curr_dist) {
+                    if (InGrid(next) && pathplanningtemp[next.x, next.y] < curr_dist && pathplanningtemp[next.x, next.y]!=BLOCKED) {
                         curr_loc = next;
                         curr_dist = pathplanningtemp[next.x, next.y];
                         waypoints.Add(next);
@@ -118,7 +159,7 @@ public class RC : MonoBehaviour {
                         continue;
                     }
                 }
-                Debug.Assert(found, "Oh God, we are stuck.");
+                //Debug.Assert(found, "Oh God, we are stuck.");
                 if (!found) {
                     return new List<Vector2Int>();
                 }
@@ -222,7 +263,13 @@ public class RC : MonoBehaviour {
         // GenerateMainwaypoint(self);
     }
     static void GenerateMainwaypoint(RC self) {
-        self.Target = new Vector2Int(UnityEngine.Random.Range(0, 5), UnityEngine.Random.Range(0, 5));
+        self.Target = null;
+        while (!self.Target.HasValue) {
+            var newTarget = new Vector2Int(UnityEngine.Random.Range(0, GRID_WIDTH-1), UnityEngine.Random.Range(0, GRID_HEIGHT-1));
+            if (self.obstacles[newTarget.x, newTarget.y]<CLEAR_OF_OBSTACLES) {
+                self.Target = newTarget;
+            }
+        }
     }
     static bool ApproxEqual(float a, float b, float delta = 0.1f) {
         return Mathf.Abs(a - b) <= delta;
@@ -383,6 +430,9 @@ public class RC : MonoBehaviour {
         if (torque > 0) { color.r = 1 - torque/ maxMotorTorque; }
         if (torque < 0) { color.g = 1 + torque/maxMotorTorque; }
         mr.material.color = color;
+    }
+    public void Awake() {
+        PrefillKnownObstacles();
     }
     public void Update() {
         if (Input.GetKeyDown(FlickButton)) {
