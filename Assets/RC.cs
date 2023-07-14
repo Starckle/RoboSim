@@ -44,7 +44,7 @@ public class RC : MonoBehaviour {
     public List<Vector2Int> waypoints = new List<Vector2Int>();
     public Vector2Int? Target = null;
     static Quaternion fourtyfive = Quaternion.Euler(0, -45, 0);
-    static float WAYPOINT_DETECTION_DISTANCE = 5/12f;
+    static float WAYPOINT_DETECTION_DISTANCE = 1f;
     static float WAY_COUNT_X = 0;
     static float WAY_COUNT_Y = 0;
     static float WAY_COUNT = 0;
@@ -168,15 +168,23 @@ public class RC : MonoBehaviour {
         return waypoints;
     }
     static bool CheckIfAtWaypoint(RC self) {
-        if (self.waypoints.Count > 0) {
-            return (self.RoboTransform.position - IndexToPosition(self.waypoints[0])).magnitude < WAYPOINT_DETECTION_DISTANCE;
-        } else {
-            return false;
+        foreach (var wp in self.waypoints) {
+            if((self.RoboTransform.position - IndexToPosition(wp)).magnitude < WAYPOINT_DETECTION_DISTANCE) {
+                return true;
+            }
         }
+        return false;
     }
     static void NextWaypoint(RC self) {
+        var end = 0;
+        for(var i=self.waypoints.Count-1; i>=0; i--) {
+            if ((self.RoboTransform.position - IndexToPosition(self.waypoints[0])).magnitude < WAYPOINT_DETECTION_DISTANCE) {
+                end = i;
+                continue;
+            }
+        }
         if (self.waypoints.Count > 0) {
-            self.waypoints.RemoveAt(0);
+            self.waypoints.RemoveRange(0,end+1);
             //for( var i=1; i<self.waypoints.Count; i++) {
             //    self.waypoints[i - 1] = self.waypoints[i];
             //}
@@ -217,7 +225,7 @@ public class RC : MonoBehaviour {
             var dist = delta.magnitude;
             var deltaLocalNormalized = self.RoboTransform.InverseTransformVector(delta).normalized;
             //var deltaLocal = self.GetRotation()
-            if (dist < 1) {
+            if (dist < 1.5) {
                 self.CmdForward = deltaLocalNormalized.z;
                 self.CmdStrafe = deltaLocalNormalized.x;
             } else {
