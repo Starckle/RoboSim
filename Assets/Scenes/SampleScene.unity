@@ -628,13 +628,25 @@ PrefabInstance:
       value: VerticalKey
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: arrowPrefab
+      value: 
+      objectReference: {fileID: 8670340697626847228, guid: 9f6808915b75ba7488768fcf96a903d8, type: 3}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: CenterOfMass
       value: 
       objectReference: {fileID: 1899456392}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: targetPrefab
+      value: 
+      objectReference: {fileID: 8670340697626847228, guid: ba295d97e3e4b9945a89a43dbc270c78, type: 3}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: RoboTransform
       value: 
       objectReference: {fileID: 500580511}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: show_waypoints
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
       value: 3
@@ -1222,13 +1234,25 @@ PrefabInstance:
       value: VerticalKeyNum
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: arrowPrefab
+      value: 
+      objectReference: {fileID: 8670340697626847228, guid: 9f6808915b75ba7488768fcf96a903d8, type: 3}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: CenterOfMass
       value: 
       objectReference: {fileID: 2140642121}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: targetPrefab
+      value: 
+      objectReference: {fileID: 8670340697626847228, guid: ba295d97e3e4b9945a89a43dbc270c78, type: 3}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: RoboTransform
       value: 
       objectReference: {fileID: 2131521159}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: show_waypoints
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
       value: 3
@@ -1784,7 +1808,7 @@ PrefabInstance:
       objectReference: {fileID: 8670340697626847228, guid: 9f6808915b75ba7488768fcf96a903d8, type: 3}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: debug_lines
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: CenterOfMass

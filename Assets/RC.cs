@@ -120,6 +120,9 @@ public class RC : MonoBehaviour {
                 var forward = next - pos;
                 var arrow = Instantiate(arrowPrefab, pos, Quaternion.identity, transform);
                 arrows.Add(arrow);
+                foreach (var mr in arrow.GetComponentsInChildren<MeshRenderer>()) {
+                    mr.material = RoboTransform.GetComponent<MeshRenderer>().material;
+                }
                 arrow.forward = forward;
             }
         }
@@ -346,6 +349,9 @@ public class RC : MonoBehaviour {
                 Destroy(self.targetArrow.gameObject);
             }
             self.targetArrow = Instantiate(self.targetPrefab, IndexToPosition(self.Target.Value), Quaternion.identity);
+            foreach(var mr in self.targetArrow.GetComponentsInChildren<MeshRenderer>()) {
+                mr.material = self.RoboTransform.GetComponent<MeshRenderer>().material;
+            }
         }
     }
     static bool ApproxEqual(float a, float b, float delta = 0.1f) {
