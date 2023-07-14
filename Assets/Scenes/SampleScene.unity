@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!59 &132188265 stripped
+HingeJoint:
+  m_CorrespondingSourceObject: {fileID: 3349221292688700317, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 1314441883}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &175678141
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +381,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 247018274018375042, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8a21f3466a1cff241af3e1fd126308ef, type: 2}
+    - target: {fileID: 988199654242867091, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8a21f3466a1cff241af3e1fd126308ef, type: 2}
     - target: {fileID: 1266849633354011778, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -425,12 +438,20 @@ PrefabInstance:
       value: Robo (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: Flicker
+      value: 
+      objectReference: {fileID: 970412436}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: RotateAxis
       value: YawKey
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: StrafeAxis
       value: HorizontalKey
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: FlickButton
+      value: space
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: ForwardAxis
@@ -696,6 +717,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 28.966, y: -75.482, z: -82.852}
+--- !u!59 &970412436 stripped
+HingeJoint:
+  m_CorrespondingSourceObject: {fileID: 3349221292688700317, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 931326722}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1059523548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -770,6 +796,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 247018274018375042, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d114b6a2b6dac9742a1a0910c5670e3e, type: 2}
+    - target: {fileID: 988199654242867091, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d114b6a2b6dac9742a1a0910c5670e3e, type: 2}
     - target: {fileID: 1266849633354011778, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -819,12 +853,20 @@ PrefabInstance:
       value: Robo (2)
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: Flicker
+      value: 
+      objectReference: {fileID: 132188265}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: RotateAxis
       value: YawKeyNum
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: StrafeAxis
       value: HorizontalKeyNum
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: FlickButton
+      value: '[0]'
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: ForwardAxis
@@ -1030,11 +1072,48 @@ PrefabInstance:
       propertyPath: m_Name
       value: Robo
       objectReference: {fileID: 0}
+    - target: {fileID: 2403397441512913744, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2403397441512913744, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2403397441512913744, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: Flicker
+      value: 
+      objectReference: {fileID: 2983838714283345043}
+    - target: {fileID: 3648537358055881710, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3648537358055881710, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7831611073207692104, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7831611073207692104, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+--- !u!59 &2983838714283345043 stripped
+HingeJoint:
+  m_CorrespondingSourceObject: {fileID: 3349221292688700317, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+  m_PrefabInstance: {fileID: 2983838714283345041}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5542277031665765311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1086,6 +1165,14 @@ PrefabInstance:
     - target: {fileID: 2295017944325808730, guid: d683a47ae88b6a941bb3df72009f5501, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104049124105258757, guid: d683a47ae88b6a941bb3df72009f5501, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104049124105258757, guid: d683a47ae88b6a941bb3df72009f5501, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 9203985521401934231, guid: d683a47ae88b6a941bb3df72009f5501, type: 3}
       propertyPath: m_Name

@@ -18,6 +18,8 @@ public class RC : MonoBehaviour {
     public string ForwardAxis = "Vertical";
     public string RotateAxis = "Horizontal";
     public string StrafeAxis = "Yaw";
+    public string FlickButton = "joystick button 0";
+    public HingeJoint Flicker = null;
 
     Quaternion[] BASE_WHEEL_ROTATIONS = new[]{
         Quaternion.Euler(0, -45, 0),
@@ -44,6 +46,14 @@ public class RC : MonoBehaviour {
         if (torque > 0) { color.r = 1 - torque/ maxMotorTorque; }
         if (torque < 0) { color.g = 1 + torque/maxMotorTorque; }
         mr.material.color = color;
+    }
+    public void Update() {
+        if (Input.GetKeyDown(FlickButton)) {
+            Flicker.useSpring = true;
+        }
+        if (Input.GetKeyUp(FlickButton)) {
+            Flicker.useSpring = false;
+        }
     }
     float FORWARD_SPEED = 1f;
     float ROTATE_SPEED = 1f;
