@@ -29,13 +29,13 @@ public class RC : MonoBehaviour {
         collider.GetWorldPose(out position, out rotation);
 
         visualWheel.transform.position = position;
-        visualWheel.transform.rotation = rotation; // * BASE_WHEEL_ROTATION
+        visualWheel.transform.rotation = rotation; // * BASE_WHEEL_ROTATION 
     }
     private void colorWheel(WheelCollider wc, float torque) {
         var mr = wc.transform.GetComponentInChildren<MeshRenderer>();
-        var color = Color.white;
-        if (torque > 0) { color = Color.green; }
-        if (torque < 0) { color = Color.red; }
+        var color = new Color(1,1,0);
+        if (torque > 0) { color.r = 1 - torque/ maxMotorTorque; }
+        if (torque < 0) { color.g = 1 + torque/maxMotorTorque; }
         mr.material.color = color;
     }
     public void FixedUpdate() {

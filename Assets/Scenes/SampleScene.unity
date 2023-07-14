@@ -170,7 +170,7 @@ WheelCollider:
     spring: 350
     damper: 45
     targetPosition: 0.5
-  m_SuspensionDistance: 0.05
+  m_SuspensionDistance: 0.01
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.1
@@ -1198,7 +1198,7 @@ WheelCollider:
     spring: 350
     damper: 45
     targetPosition: 0.5
-  m_SuspensionDistance: 0.05
+  m_SuspensionDistance: 0.01
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.1
@@ -2159,7 +2159,7 @@ MonoBehaviour:
     rightWheel: {fileID: 90124060}
     motor: 1
     steering: 0
-  maxMotorTorque: 2
+  maxMotorTorque: 3
 --- !u!1 &1634093622
 GameObject:
   m_ObjectHideFlags: 0
@@ -2207,7 +2207,7 @@ WheelCollider:
     spring: 350
     damper: 45
     targetPosition: 0.5
-  m_SuspensionDistance: 0.05
+  m_SuspensionDistance: 0.01
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.1
@@ -2719,7 +2719,7 @@ WheelCollider:
     spring: 50
     damper: 10
     targetPosition: 0.5
-  m_SuspensionDistance: 0.05
+  m_SuspensionDistance: 0.01
   m_ForceAppPointDistance: 0
   m_Mass: 5
   m_WheelDampingRate: 0.1
