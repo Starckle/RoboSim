@@ -26,6 +26,7 @@ public class RoboState {
     public RoboTransition[] transitions;
     public Action<RC> execution;
 }
+
 public class RC : MonoBehaviour {
     public List<AxleInfo> axleInfos;
     public UltraS[] sensors;
@@ -40,45 +41,136 @@ public class RC : MonoBehaviour {
     public HingeJoint Flicker = null;
 
     public RoboStateName state = RoboStateName.Drive;
-    public Vector3[] waypoints = new[] { Vector3.zero };
+    public List<Vector2Int> waypoints = new List<Vector2Int>();
+    public Vector2Int? Target = null;
     static Quaternion fourtyfive = Quaternion.Euler(0, -45, 0);
     static float WAYPOINT_DETECTION_DISTANCE = 5/12f;
+    static float WAY_COUNT_X = 0;
+    static float WAY_COUNT_Y = 0;
+    static float WAY_COUNT = 0;
+
+    static int BLOCKED = -1;
+    static int GRID_WIDTH = 6;
+    static int GRID_HEIGHT = 6;
+    static int MAX_DIST = GRID_WIDTH * GRID_HEIGHT;
+    public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
+    public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
+    static Vector2Int[] DIRS = new Vector2Int[] {
+        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
+    };
+    static Vector2Int PositionToIndex(Vector3 pos) {
+        return new Vector2Int((int)Mathf.Round((pos.x + 5) / 2), (int)Mathf.Round((pos.z + 5) / 2));
+    }
+    static Vector3 IndexToPosition(Vector2Int idx) {
+        return new Vector3(idx.x * 2 -5, 0, idx.y * 2 -5);
+    }
+    static bool InGrid(Vector2Int idx) {
+        return idx.x >= 0 && idx.x < GRID_WIDTH && idx.y >= 0 && idx.y < GRID_HEIGHT;
+    }
+    public List<Vector2Int> GenerateWaypointsToTarget(Vector3 from, Vector3 to) {
+        var from_idx = PositionToIndex(from);
+        var to_idx = PositionToIndex(to);
+        List<Vector2Int> waypoints = new List<Vector2Int>();
+        for(var x =0; x<GRID_WIDTH; x++) {
+            for(var y = 0; y<GRID_HEIGHT; y++) {
+                pathplanningtemp[x, y] = MAX_DIST;
+            }
+        }
+        HashSet<Vector2Int> locs = new HashSet<Vector2Int>();
+        locs.Add(to_idx);
+        bool graph_completed = false;
+        float dist = 0;
+        while (locs.Any() && !graph_completed) {
+            HashSet<Vector2Int> new_locs = new HashSet<Vector2Int>();
+            foreach(var loc in locs) {
+                if (loc == from_idx) {
+                    pathplanningtemp[loc.x, loc.y] = dist;
+                    graph_completed = true;
+                    break;
+                }
+                if (dist < pathplanningtemp[loc.x, loc.y] ) {
+                    pathplanningtemp[loc.x, loc.y] = dist;
+                    foreach(var off in DIRS) {
+                        var new_pos = loc + off;
+                        if (InGrid(new_pos)) {
+                            new_locs.Add(new_pos);
+                        }
+                    }
+                }
+            }
+            dist++;
+            locs = new_locs;
+        }
+
+        if (graph_completed) {
+            var curr_loc = from_idx;
+            var curr_dist = pathplanningtemp[curr_loc.x, curr_loc.y];
+            // TODO: This can loop forever. add safety
+            while (curr_loc != to_idx) {
+                var found = false;
+                foreach (var dir in DIRS) {
+                    var next = curr_loc + dir;
+                    if (InGrid(next) && pathplanningtemp[next.x, next.y] < curr_dist) {
+                        curr_loc = next;
+                        curr_dist = pathplanningtemp[next.x, next.y];
+                        waypoints.Add(next);
+                        found = true;
+                        continue;
+                    }
+                }
+                Debug.Assert(found, "Oh God, we are stuck.");
+                if (!found) {
+                    return new List<Vector2Int>();
+                }
+            }
+        }
+        return waypoints;
+    }
     static bool CheckIfAtWaypoint(RC self) {
-        if (self.waypoints.Length > 0) {
-            return (self.RoboTransform.position - self.waypoints[0]).magnitude < WAYPOINT_DETECTION_DISTANCE;
+        if (self.waypoints.Count > 0) {
+            return (self.RoboTransform.position - IndexToPosition(self.waypoints[0])).magnitude < WAYPOINT_DETECTION_DISTANCE;
         } else {
             return false;
         }
     }
     static void NextWaypoint(RC self) {
-        if (self.waypoints.Length > 0) {
-            for( var i=1; i<self.waypoints.Length; i++) {
-                self.waypoints[i - 1] = self.waypoints[i];
-            }
-            Array.Resize(ref self.waypoints, self.waypoints.Length - 1);
+        if (self.waypoints.Count > 0) {
+            self.waypoints.RemoveAt(0);
+            //for( var i=1; i<self.waypoints.Count; i++) {
+            //    self.waypoints[i - 1] = self.waypoints[i];
+            //}
+            //Array.Resize(ref self.waypoints, self.waypoints.Length - 1);
         }
     }
     static bool NoWaypoints(RC self) {
-        return self.waypoints.Length == 0;
+        return self.waypoints.Count == 0;
     }
     static bool HaveWaypoints(RC self) {
-        return self.waypoints.Length > 0;
+        return self.waypoints.Count > 0;
     }
     static bool AlwaysTrue(RC self) {
         return true;
     }
     static void DoDrive(RC self) {
-        if(self.waypoints.Length == 0) {
+        if(self.waypoints.Count == 0) {
             return;
         }
         
         Debug.DrawLine(self.RoboTransform.position, self.RoboTransform.position + self.RoboTransform.forward * 2, Color.green);
-        Debug.DrawLine(self.RoboTransform.position, self.waypoints[0], Color.blue);
-        // TODO: Implement this
+        var from = self.RoboTransform.position;
+        foreach(var wp in self.waypoints) {
+            var to = IndexToPosition(wp);
+            Debug.DrawLine(from, to, Color.blue);
+            from = to;
+        }
+        if (self.Target.HasValue) {
+            Debug.DrawLine(self.RoboTransform.position, IndexToPosition(self.Target.Value), Color.magenta);
+        }
+        
         if (self.sensors.Min(s => s.distance) < 1.5f) {
             DoAvoidance(self);
         } else {
-            var delta = self.waypoints[0] - self.RoboTransform.position;
+            var delta = IndexToPosition(self.waypoints[0]) - self.RoboTransform.position;
             delta.y = 0;
             var angle = Vector3.SignedAngle(self.RoboTransform.forward, delta, Vector3.up);
             var dist = delta.magnitude;
@@ -101,17 +193,42 @@ public class RC : MonoBehaviour {
         self.CmdForward = 0;
         self.CmdRotate = 0;
         self.CmdStrafe = 0;
+        GenerateMainwaypoint(self);
     }
     static void GenerateWaypoints(RC self) {
-        self.waypoints = new Vector3[1];
-        self.waypoints[0].x = -5 + UnityEngine.Random.Range(0, 5) * 2;
-        self.waypoints[0].z = -5 + UnityEngine.Random.Range(0, 5) * 2;
+        if (self.Target.HasValue) {
+            self.waypoints = self.GenerateWaypointsToTarget(self.RoboTransform.position, IndexToPosition(self.Target.Value));
+        }
+ /* !!!! ----> */    //if (ApproxEqual(self.waypoints[0].x, self.Mainwaypoint[0].x)) {
+            //self.Mainwaypoint = new Vector3[1];
+            //self.Mainwaypoint[0].x = -5 + UnityEngine.Random.Range(0, 5) * 2;
+            //self.Mainwaypoint[0].z = -5 + UnityEngine.Random.Range(0, 5) * 2;
+      //  }
+        //self.waypoints = new Vector3[1];
+        //self.waypoints[0].x = -5 + UnityEngine.Random.Range(0, 5) * 2;
+        //self.waypoints[0].z = -5 + UnityEngine.Random.Range(0, 5) * 2;
+ // CONCEPT  
+        // if (WAY_COUNT % 2 == 0)
+            // Mainwaypoint[0].x - WAY_COUNT_X (WAY_COUNT_X = Mainwaypoint[0].x - 1)
+            //WAY_COUNT_X = WAY_COUNT_X - 1
+        //else
+            // Mainwaypoint[0].z - WAY_COUNT_Z (WAY_COUNT_Z = Mainwaypoint[0].Z - 1)
+            //WAY_COUNT_Z = WAY_COUNT_Z - 1
+        // WAY_COUNT = WAY_COUNT + 1
+
+    }
+    static void DoPlanning(RC self) {
+        GenerateWaypoints(self);
+        // GenerateMainwaypoint(self);
+    }
+    static void GenerateMainwaypoint(RC self) {
+        self.Target = new Vector2Int(UnityEngine.Random.Range(0, 5), UnityEngine.Random.Range(0, 5));
     }
     static bool ApproxEqual(float a, float b, float delta = 0.1f) {
         return Mathf.Abs(a - b) <= delta;
     }
     static void DoAvoidance(RC self) {
-        float Freakiness = 0.3f;
+        float Freakiness = 0.8f;
         self.CmdForward = 0;
         self.CmdRotate = 0;
         self.CmdStrafe = 0;
@@ -143,7 +260,8 @@ public class RC : MonoBehaviour {
 
                 //    } else 
                 if(self.sensors[1].distance <= 1f) {
-                    self.CmdForward = -0.2f;
+                    self.CmdForward = -1f;
+                    Debug.DrawLine(self.RoboTransform.position, self.RoboTransform.position + self.RoboTransform.forward * 3, Color.cyan);
                 }
                 if (ApproxEqual(
                         self.sensors[0].distance - self.sensors[1].distance,
@@ -187,10 +305,10 @@ public class RC : MonoBehaviour {
             }
         },
         {
-            RoboStateName.Planning,
+            RoboStateName.Planning, 
             new RoboState {
                 name = RoboStateName.Planning,
-                execution = GenerateWaypoints,
+                execution = DoPlanning,
                 transitions = new RoboTransition[] {
                     new RoboTransition{
                         from = RoboStateName.Planning,

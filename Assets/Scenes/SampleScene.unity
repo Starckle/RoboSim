@@ -557,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1957218410206730562, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2371766611236174778, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_IsActive
@@ -1053,7 +1053,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1957218410206730562, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2371766611236174778, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: m_IsActive
@@ -1661,6 +1661,10 @@ PrefabInstance:
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.size
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
+      propertyPath: waypoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2485520010458844752, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
       propertyPath: sensors.Array.data[0]
