@@ -15,7 +15,7 @@ public class RC : MonoBehaviour {
     public float maxMotorTorque;
     //public float maxSteeringAngle;
 
-    Quaternion BASE_WHEEL_ROTATION = Quaternion.Euler(0, 0, 90);
+    //Quaternion BASE_WHEEL_ROTATION = Quaternion.Euler(0, 0, 90);
 
     public void ApplyLocalPositionToVisuals(WheelCollider collider) {
         if (collider.transform.childCount == 0) {
@@ -29,7 +29,7 @@ public class RC : MonoBehaviour {
         collider.GetWorldPose(out position, out rotation);
 
         visualWheel.transform.position = position;
-        visualWheel.transform.rotation = rotation * BASE_WHEEL_ROTATION;
+        visualWheel.transform.rotation = rotation; // * BASE_WHEEL_ROTATION
     }
     private void colorWheel(WheelCollider wc, float torque) {
         var mr = wc.transform.GetComponentInChildren<MeshRenderer>();
