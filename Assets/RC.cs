@@ -52,11 +52,11 @@ public class RC : MonoBehaviour {
     static int BLOCKED = -1;
     public static int CLEAR_OF_OBSTACLES = 100;
     static float DRIVE_NO_AVOIDANCE_TIME = 0.5f;
-    public static int GRID_WIDTH = 11; //6;
-    public static int GRID_HEIGHT = 11; //6;
+    public static int GRID_WIDTH = 13; //6;
+    public static int GRID_HEIGHT = 13; //6;
     public static float GRID_SIZE = 1f; //2; //2ft per cube
-    public static float GRID_X_START = -5f;
-    public static float GRID_Y_START = -5f;
+    public static float GRID_X_START = -6f;
+    public static float GRID_Y_START = -6f;
     static int MAX_DIST = GRID_WIDTH * GRID_HEIGHT;
     public float[,] obstacles = new float[GRID_WIDTH, GRID_HEIGHT];
     public float[,] pathplanningtemp = new float[GRID_WIDTH, GRID_HEIGHT];
@@ -277,6 +277,9 @@ public class RC : MonoBehaviour {
         if (self.Target.HasValue) {
             var start = Time.realtimeSinceStartup;
             self.waypoints = self.GenerateWaypointsToTarget(self.RoboTransform.position, IndexToPosition(self.Target.Value));
+            if (self.waypoints.Count == 0) {
+                GenerateMainwaypoint(self);
+            }
             var stop = Time.realtimeSinceStartup;
             Debug.Log("Created a " + self.waypoints.Count + " waypoint route in " + (stop - start) + " ms");
         }
