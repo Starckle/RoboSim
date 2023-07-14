@@ -58,11 +58,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4483230195709917358, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.599
+      value: 1.567
       objectReference: {fileID: 0}
     - target: {fileID: 6585200123509147369, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
       propertyPath: m_Name
       value: 3ft Stick
+      objectReference: {fileID: 0}
+    - target: {fileID: 8582960024160788545, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
+      propertyPath: m_Height
+      value: 2.0472686
+      objectReference: {fileID: 0}
+    - target: {fileID: 8582960024160788545, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
+      propertyPath: m_Radius
+      value: 0.49765143
+      objectReference: {fileID: 0}
+    - target: {fileID: 8582960024160788545, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
+      propertyPath: m_Center.x
+      value: 0.0023487583
+      objectReference: {fileID: 0}
+    - target: {fileID: 8582960024160788545, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
+      propertyPath: m_Center.y
+      value: -0.02363221
+      objectReference: {fileID: 0}
+    - target: {fileID: 8582960024160788545, guid: c229283c5d8490d409cd5ca64ffa9cd3, type: 3}
+      propertyPath: m_Center.z
+      value: -0.000000074505806
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
