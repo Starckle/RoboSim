@@ -484,10 +484,73 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &395320133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 395320135}
+  - component: {fileID: 395320134}
+  m_Layer: 0
+  m_Name: PC_VR_Switcher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &395320134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395320133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39768eac92708d34cbf5032d12b9ae29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableOnPC:
+  - {fileID: 963194225}
+  - {fileID: 2090869589}
+  - {fileID: 1953298813}
+  - {fileID: 249230197}
+  EnableOnVR:
+  - {fileID: 585518296}
+  DisableOnPC:
+  - {fileID: 585518296}
+  DisableOnVR:
+  - {fileID: 963194225}
+  - {fileID: 2090869589}
+  - {fileID: 1953298813}
+  - {fileID: 249230197}
+--- !u!4 &395320135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395320133}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.309389, y: -11.017677, z: -10.810279}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &500580511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5260277092215463520, guid: 06285a292d114fa4fbd710600bb452b9, type: 3}
   m_PrefabInstance: {fileID: 931326722}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &585518296 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+  m_PrefabInstance: {fileID: 250689659}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &595919789 stripped
 MonoBehaviour:
